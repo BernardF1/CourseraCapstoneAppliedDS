@@ -3,7 +3,11 @@ This file is the final report I created for the [Applied Data Science Capstone](
 
 # Section 1: Introduction
 Many large cities in Canada, including those in the Greater Toronto Area, have been experiencing significant increases in real estate prices. This has caused a number of social issues, such as migrations of younger people to areas where the housing costs are more affordable.
+
 The purpose of this project is to further develop the concepts initially explored in this course. More specifically, I intend to further leverage the exploration of Toronto neighborhoods initially done using FourSquare data, and add data about house prices, to understand whether there is a relationship between those and the types of venues near the properties being sold.
+
+This way, when listing properties, both owners and real estate agents can more accurately predict their value based on the types of venues available (or not) nearby.
+
 ## Target Audience
 The target audience for this project are real estate agents in the Toronto area, as well as anyone planning on buying a house or investing in real estate in the area.
 
