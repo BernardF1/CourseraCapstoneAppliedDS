@@ -3,6 +3,8 @@ This file is the final report I created for the [Applied Data Science Capstone](
 
 # Section 1: Introduction
 The purpose of this project is to further develop the concepts initially explored in this course. More specifically, I intend to further leverage the exploration of Toronto neighborhoods initially done using FourSquare data, and add data about house prices, to understand whether there is a relationship between those and the types of venues near the properties being sold.
+## Target Audience
+The target audience for this project are real estate agents in the Toronto area, as well as anyone planning on buying a house or investing in real estate in the area.
 
 # Section 2: Data
 ## Ontario Property Sales
