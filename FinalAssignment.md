@@ -139,3 +139,4 @@ The second data set I used was the FourSquare venue data, obtained in JSON forma
    'header': 'Tap to show:'},
   'totalResults': 7}}
 ```
+From this data, I plan to use the latitude and longitude features to display the data on a map, and the distance and category features to understand how they influence house prices.
