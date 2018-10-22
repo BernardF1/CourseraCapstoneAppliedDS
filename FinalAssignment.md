@@ -33,7 +33,7 @@ Here is a sample of a few rows of data:
 |8|532 Caledonia Rd Toronto, ON|Fairbank|25|43.691193|-79.461662|
 
 As it can be seen above, there are a few oddities in the data: the indexes skip some numbers, and some of the prices don't
- make sense. These will be further explored and addressed later in the project.
+ make sense. These will be further explored and addressed later in the project (see the 'Methodology' section).
  
 ## FourSquare Venue Data
 The second data set I used was the FourSquare venue data, obtained in JSON format by using the FourSquare API with a Sandbox Developer account. Here is a sample of this data:
@@ -139,4 +139,37 @@ The second data set I used was the FourSquare venue data, obtained in JSON forma
    'header': 'Tap to show:'},
   'totalResults': 7}}
 ```
-From this data, I plan to use the latitude and longitude features to display the data on a map, and the distance and category features to understand how they influence house prices.
+From this data, I used the latitude and longitude features to display the data on a map, and the distance and category features to understand how they influence house prices.
+
+## Methodology
+The following phases were used in the analysis stage of this project:
+1. Data Understanding
+2. Data Preparation
+3. Modelling
+4. Evaluation
+
+The first step was to understand the data. This was done by examining the Ontario Property Sales data using Excel, by confirming the data types were appropriate using the dataframe's `.dtypes` property, and by using the `describe()` method. A number of data quality issues were found, which will be discussed shortly.
+
+The FourSquare sample `json` data was also examined, but no issues were found.
+
+#### Issues with the Ontario Property Sales Data
+1. Some entries are missing the area name.
+2. Some entries have zero as the sale price. Were those properties given away for free?
+3. Some entries seem to have latitude and/or longitude set to -999. That's invalid.
+4. Still looking at latitudes and longitudes, it seems the data set is bigger than just Toronto. Longitude = 1.074519 is not even in North America!
+5. Looks like there are some duplicate entries in the data.
+
+### Data Preparation
+To prepare the data for modelling, the issues above would need to be addressed. This was the approach used for each:
+1. Missing area names: I chose to do nothing about that one, as it was not expected to impact the model
+2. Zero sale price: to determine the scope of the problem, I initially used a histogram, but that was not very helpful due to the significant range (difference between maximum and minimum values) of the data. My next step was to use a distribution plot, excluding the top 20% of the data to better see the lower end of the range. I also did line plots and violin plots to confirm (all those visualizations can be seen in my notebook [here](https://github.com/BernardF1/CourseraCapstoneAppliedDS/blob/master/Applied%20Capstone%20Project%20-%20Final.ipynb)).This helped me see there was a significant number of records with suspiciously low values. My theory is that those sale values were entered in thousands of dollars (e.g. 60 instead of 60,000), but, since I did not have a way of confirming this theory, I opted to simply exclude the bottom 1000 sale prices from the data set. A similar violin plot showed some suspiciously high values in that field, so I excluded to the top 1000 as well, eliminating these outliers.
+3. Invalid latitudes and longitudes (-999): geolocation data is a key feature for the business problem and to generate the other features necessary for the model. Since the number of observations affected was relatively small (153 out of 20,000+), I visually inspected them. None appeared to be from Toronto, so simply dropped those records.
+4. Properties outside Toronto: in the summary statistics of the data, I noticed the range of latitudes and longitudes was too big to represent just the city of Toronto and, in fact, the set represents the entire province of Ontario. In addition, some longitudes seemed invalid, pointing to locations in Europe. To address this, I used `Nominatim()` (part of the `geopy` library) to generate the coordinate for Toronto, and `vincenty()` (also part of `geopy`) to add a feature to the data set representing the distance of any given property to that coordinate, in Kilometres. Upon consulting [Wikipedia](https://en.wikipedia.org/wiki/Toronto), I decided to use a radius of 20 Km as a cutoff to determine whether or not a property is located in Toronto, and eliminated from consideration all properties further away than that. This reduced the data set to just over 4,000 observations.
+5. Duplicate observations: I used `.dropna()` to eliminate these observations.
+
+
+## Results
+
+## Discussion
+Sample
+Additional features
