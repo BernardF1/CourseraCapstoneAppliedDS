@@ -167,9 +167,25 @@ To prepare the data for modelling, the issues above would need to be addressed. 
 4. Properties outside Toronto: in the summary statistics of the data, I noticed the range of latitudes and longitudes was too big to represent just the city of Toronto and, in fact, the set represents the entire province of Ontario. In addition, some longitudes seemed invalid, pointing to locations in Europe. To address this, I used `Nominatim()` (part of the `geopy` library) to generate the coordinate for Toronto, and `vincenty()` (also part of `geopy`) to add a feature to the data set representing the distance of any given property to that coordinate, in Kilometres. Upon consulting [Wikipedia](https://en.wikipedia.org/wiki/Toronto), I decided to use a radius of 20 Km as a cutoff to determine whether or not a property is located in Toronto, and eliminated from consideration all properties further away than that. This reduced the data set to just over 4,000 observations.
 5. Duplicate observations: I used `.dropna()` to eliminate these observations.
 
+The next step on the data preparation was to use the FourSquare API to find venues close to the properties in question. I chose to define "close" as "within 200 metres". This definition was based on what I consider a comfortable walking distance. I decided to reuse the `getNearbyVenues()` from a previous project for this purpose.
+
+However, due to constraints in my FourSquare account (maximum daily allowance of 950 regular API calls), the data set was too big to address in its entirety. In other words, sampling was required. I used the `sample()` function from the `random` library to ensure the sampling was random. As I was fairly confident that I would not need to test this portion of the code many times in a day, I chose 200 as the sample size. I also visually verified the distribution of properties on the map of Toronto, using the `Map()` funtion of the `folium` library.
+
+I then collected the FourSquare data, which included a list of over 6,000 venues in over 300 categories within 200 m of the sample properties. A couple of properties did not have any nearby venues, so I removed those from the sample set.
+
+The final step in data preparation was to change the text features to numeric values. I used `get_dummies()` from `pandas` for that purpose, then I grouped the observations for each address using the mean value of each feature. Finally, I merged the resulting dataframe with the original set of observations to have a complete feature set.
+
+### Modelling
+Since the goal was to predict the property selling price, I recognized it as a regression problem, and since the goal was to use a combination of features as predictors, I determined it was a multivariate regression. I then attempted to fit the Linear Regression algorithm to the data.
+
+I split the sample data in training and test sets using `train_test_split` from the `sklearn.model_selection` library, and used them to fit the Linear Regression model. Unfortunately, using `cross_val_score` from the same library revealed that the model was not good at all at predicting house prices. I attempted further tuning, but it ultimately proved futile.
+
+Still, with the intent of perhaps facilitating future studies, I used Permutation Importance to identify which features most affected the model (still recognizing the model was not good at predicting prices). I identified the top 15 features, out of over 300, that had the biggest impact in the model's predictions, and used them to refit the model. Additional cross-validation showed that the accuracy improved, but only marginally.
+
+Finally, I used Shapley Additive Explanation (SHAP, in short) values to understand how those 15 features were affecting the model, and whether the effect was positive or negative. A SHAP summary plot was produced for ease of interpretation.
 
 ## Results
+Unfortunately, this study was unable to find a method to predict property prices in Toronto solely based on the nearby venues. While the sample size was limited based on the FourSquare account restrictions, I don't believe a larger number of observations would have yielded substantially better results.
 
 ## Discussion
-Sample
-Additional features
+I believe the data set used was not complete enough to predict property values. Providing additional features, such as property size, should result in a much more accurate model. In addition, using the Area Name feature would probably increase the accuracy of predictions substantially, but that was not the goal of this study. I would recommend future studies to incorporate these recommendations, and maybe use the features I identified as being most important to the model, in conjunction with the additional features, to understand the sensitivity (positive or negative) of property prices to the proximity of certain venues.
