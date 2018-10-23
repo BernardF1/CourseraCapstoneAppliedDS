@@ -173,7 +173,7 @@ However, due to constraints in my FourSquare account (maximum daily allowance of
 
 I then collected the FourSquare data, which included a list of over 6,000 venues in over 300 categories within 200 m of the sample properties. A couple of properties did not have any nearby venues, so I removed those from the sample set.
 
-The final step in data preparation was to change the text features to numeric values. I used `get_dummies()` from `pandas` for that purpose, then I grouped the observations for each address using the mean value of each feature. Finally, I merged the resulting dataframe with the original set of observations to have a complete feature set.
+The final step in data preparation was to change the text features to numeric values. I used `get_dummies()` from `pandas` to one-hot encode the venue categories, then I grouped the observations for each address using the mean value of each feature. Finally, I merged the resulting dataframe with the original set of observations to have a complete feature set.
 
 ### Modelling and Evaluation
 Since the goal was to predict the property selling price, I recognized it as a regression problem, and since the goal was to use a combination of features as predictors, I determined it was a multivariate regression. I then attempted to fit the Linear Regression algorithm to the data.
